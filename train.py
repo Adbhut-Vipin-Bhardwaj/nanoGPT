@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -7,9 +8,9 @@ from nano_gpt import nanoGPT
 
 
 ctxt_len = 256
-batch_size = 32
+batch_size = 256
 n_embed = 384
-num_layers = 6
+num_layers = 8
 num_heads = 6
 dropout = 0.2
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -17,6 +18,8 @@ max_iters = 5000
 eval_interval = 100
 eval_iters = 200 # how many batches to eval on in one evaluation
 learning_rate = 5e-4
+model_dir = "./models/"
+model_filename = "nanoGPT"
 
 with open("./datasets/tiny_shakespeare/input.txt", "r") as f:
     text = f.read()
@@ -90,10 +93,16 @@ def estimate_loss():
 
 optimizer = torch.optim.AdamW(llm.parameters(), lr=learning_rate)
 
+best_loss = torch.inf
 for iter in range(max_iters):
     print(f"Train iter: {iter}")
     if iter%eval_interval == 0 or iter == max_iters-1:
         losses = estimate_loss()
+        if losses['val'] < best_loss:
+            os.makedirs(model_dir, exist_ok=True)
+            torch.save(
+                llm.state_dict(), os.path.join(model_dir, model_filename)
+            )
         print(
             f"step {iter}: train loss {losses['train']:.4f}"
             + f", val loss {losses['val']:.4f}"
