@@ -10,7 +10,7 @@ from nano_gpt import nanoGPT
 ctxt_len = 256
 batch_size = 256
 n_embed = 384
-num_layers = 8
+num_layers = 6
 num_heads = 6
 dropout = 0.2
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
