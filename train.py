@@ -19,7 +19,7 @@ eval_interval = 100
 eval_iters = 200 # how many batches to eval on in one evaluation
 learning_rate = 5e-4
 model_dir = "./models/"
-model_filename = "nanoGPT"
+model_filename = "nanoGPT.pt"
 
 with open("./datasets/tiny_shakespeare/input.txt", "r") as f:
     text = f.read()
