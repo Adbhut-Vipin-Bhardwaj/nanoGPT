@@ -1,4 +1,5 @@
 import os
+import json
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -18,8 +19,15 @@ max_iters = 5000
 eval_interval = 100
 eval_iters = 200 # how many batches to eval on in one evaluation
 learning_rate = 5e-4
-model_dir = "./models/"
-model_filename = "nanoGPT.pt"
+model_name = "nanoGPT"
+
+
+model_dir = f"./models/{model_name}"
+model_filename = "state_dict.pt"
+model_config_filename = "config.json"
+encoding_dict_filename = "encoding_dict.json"
+decoding_dict_filename = "decoding_dict.json"
+
 
 with open("./datasets/tiny_shakespeare/input.txt", "r") as f:
     text = f.read()
@@ -31,6 +39,11 @@ print(f"Vocab size: {vocab_size}")
 
 ctoi = {c:i for i, c in enumerate(chars)}
 itoc = {i:c for i, c in enumerate(chars)}
+
+with open(os.path.join(model_dir, encoding_dict_filename), "w") as f:
+    json.dump(ctoi, f, indent=2)
+with open(os.path.join(model_dir, decoding_dict_filename), "w") as f:
+    json.dump(itoc, f, indent=2)
 
 def encode(s):
     return [ctoi[c] for c in s]
@@ -63,7 +76,17 @@ def get_batch(split):
     x, y = x.to(device), y.to(device)
     return x, y
 
-llm = nanoGPT(vocab_size, ctxt_len, n_embed, num_heads, num_layers, dropout, device)
+nanoGPT_config = {
+    "ctxt_len": ctxt_len,
+    "n_embed": n_embed,
+    "num_heads": num_heads,
+    "num_layers": num_layers,
+    "dropout": dropout
+}
+with open(os.path.join(model_dir, model_config_filename), "w") as f:
+    json.dump(nanoGPT_config, f, indent=2)
+
+llm = nanoGPT(device=device, vocab_size=vocab_size, **nanoGPT_config)
 llm.to(device)
 
 ## Generated tokens before train
