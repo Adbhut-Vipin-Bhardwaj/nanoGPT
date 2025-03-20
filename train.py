@@ -5,6 +5,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 torch.manual_seed(42)
 
+from datasets import load_dataset
+from huggingface_hub import login
+
 from nano_gpt import nanoGPT
 
 
@@ -19,7 +22,7 @@ max_iters = 5000
 eval_interval = 100
 eval_iters = 200 # how many batches to eval on in one evaluation
 learning_rate = 5e-4
-model_name = "nanoGPT"
+model_name = "nanoGPT-bigscience_en_wikinews-pt"
 
 
 model_dir = f"./models/{model_name}"
@@ -29,8 +32,12 @@ encoding_dict_filename = "encoding_dict.json"
 decoding_dict_filename = "decoding_dict.json"
 
 
-with open("./datasets/tiny_shakespeare/input.txt", "r") as f:
-    text = f.read()
+token = "<huggingface token>"
+login(token)
+
+
+ds = load_dataset("bigscience-data/roots_en_wikinews", split="train")
+text = "\n\n".join([s["text"] for s in ds])
 
 
 chars = sorted(list(set(text)))
@@ -103,7 +110,7 @@ def estimate_loss():
     losses = {}
     llm.eval()
     for split in ['train', 'val']:
-        running_loss = 0;
+        running_loss = 0
         for i in range(eval_iters):
             x, y = get_batch(split)
             logits = llm(x)
