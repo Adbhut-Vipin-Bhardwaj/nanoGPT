@@ -47,6 +47,7 @@ print(f"Vocab size: {vocab_size}")
 ctoi = {c:i for i, c in enumerate(chars)}
 itoc = {i:c for i, c in enumerate(chars)}
 
+os.makedirs(model_dir, exist_ok=True)
 with open(os.path.join(model_dir, encoding_dict_filename), "w") as f:
     json.dump(ctoi, f, indent=2)
 with open(os.path.join(model_dir, decoding_dict_filename), "w") as f:
