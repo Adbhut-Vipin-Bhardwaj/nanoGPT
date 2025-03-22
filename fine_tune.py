@@ -40,7 +40,7 @@ eval_iters = 200 # how many batches to eval on in one evaluation
 learning_rate = 5e-4
 
 
-with open("./datasets/tiny_shakespeare/input.txt", "r") as f:
+with open("./datasets_dir/tiny_shakespeare/input.txt", "r") as f:
     text = f.read()
 
 vocab_size = len(encoding_dict)
