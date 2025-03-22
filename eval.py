@@ -31,6 +31,7 @@ def decode(token_seq):
     return "".join([decoding_dict[str(i)] for i in token_seq])
 
 llm = nanoGPT(device=device, vocab_size=vocab_size, **nanoGPT_config)
+llm.to(device)
 state_dict = torch.load(
     os.path.join(model_dir, model_filename),
     weights_only=True,
