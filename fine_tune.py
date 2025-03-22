@@ -27,10 +27,10 @@ with open(os.path.join(base_model_dir, decoding_dict_filename), "r") as f:
     decoding_dict = json.load(f)
 
 ctxt_len = nanoGPT_config["ctxt_len"]
-n_embed = nanoGPT_config["ctxt_len"]
-num_layers = nanoGPT_config["ctxt_len"]
-num_heads = nanoGPT_config["ctxt_len"]
-dropout = nanoGPT_config["ctxt_len"]
+n_embed = nanoGPT_config["n_embed"]
+num_layers = nanoGPT_config["num_layers"]
+num_heads = nanoGPT_config["num_heads"]
+dropout = nanoGPT_config["dropout"]
 
 batch_size = 256
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
