@@ -1,0 +1,8 @@
+#!/bin/bash
+
+RUNPOD_HOST=$1
+RUNPOD_PORT=$2
+RUNPOD_PROJECT_NAME=$3
+MODEL_DIR=$4
+
+scp -P ${RUNPOD_PORT} -r ./models/${MODEL_DIR} root@${RUNPOD_HOST}:~/app/${RUNPOD_PROJECT_NAME}/models/
