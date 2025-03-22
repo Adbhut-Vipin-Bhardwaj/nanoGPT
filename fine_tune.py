@@ -57,7 +57,7 @@ def encode(s):
     return [encoding_dict[c] for c in s]
 
 def decode(token_seq):
-    return "".join([decoding_dict[i] for i in token_seq])
+    return "".join([decoding_dict[str(i)] for i in token_seq])
 
 tokenized_text = encode(text)
 
