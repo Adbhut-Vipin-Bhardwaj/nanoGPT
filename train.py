@@ -5,8 +5,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 torch.manual_seed(42)
 
-from datasets import load_dataset
-from huggingface_hub import login
+# from datasets import load_dataset
+# from huggingface_hub import login
 
 from nano_gpt import nanoGPT
 
@@ -19,10 +19,11 @@ num_heads = 6
 dropout = 0.2
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 max_iters = 5000
+print_interval = 10  # print progress logs evey print_interval epoch
 eval_interval = 100
 eval_iters = 200 # how many batches to eval on in one evaluation
 learning_rate = 5e-4
-model_name = "nanoGPT-bigscience_en_wikinews-pt"
+model_name = "nanoGPT"
 
 
 model_dir = f"./models/{model_name}"
@@ -32,12 +33,14 @@ encoding_dict_filename = "encoding_dict.json"
 decoding_dict_filename = "decoding_dict.json"
 
 
-token = "<huggingface token>"
-login(token)
+# token = "<huggingface token>"
+# login(token)
 
 
-ds = load_dataset("bigscience-data/roots_en_wikinews", split="train")
-text = "\n\n".join([s["text"] for s in ds])
+# ds = load_dataset("bigscience-data/roots_en_wikinews", split="train")
+# text = "\n\n".join([s["text"] for s in ds])
+with open("./datasets_dir/tiny_shakespeare/input.txt", "r") as f:
+    text = f.read()
 
 
 chars = sorted(list(set(text)))
@@ -126,7 +129,8 @@ optimizer = torch.optim.AdamW(llm.parameters(), lr=learning_rate)
 
 best_loss = torch.inf
 for iter in range(max_iters):
-    print(f"Train iter: {iter}")
+    if iter % print_interval == 0:
+        print(f"Train iter: {iter}")
     if iter%eval_interval == 0 or iter == max_iters-1:
         losses = estimate_loss()
         if losses['val'] < best_loss:

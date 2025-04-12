@@ -35,6 +35,7 @@ dropout = nanoGPT_config["dropout"]
 batch_size = 256
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 max_iters = 1000
+print_interval = 10  # print progress logs evey print_interval epoch
 eval_interval = 100
 eval_iters = 200 # how many batches to eval on in one evaluation
 learning_rate = 5e-4
@@ -132,7 +133,8 @@ optimizer = torch.optim.AdamW(llm.parameters(), lr=learning_rate)
 
 best_loss = torch.inf
 for iter in range(max_iters):
-    print(f"Train iter: {iter}")
+    if iter % print_interval == 0:
+        print(f"Train iter: {iter}")
     if iter%eval_interval == 0 or iter == max_iters-1:
         losses = estimate_loss()
         if losses['val'] < best_loss:
