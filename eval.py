@@ -5,7 +5,7 @@ import torch
 from nano_gpt import nanoGPT
 
 
-model_name = "nanoGPT"
+model_name = "nanoGPT-bigscience_en_wikinews-pt"
 model_dir = f"./models/{model_name}"
 model_filename = "state_dict.pt"
 model_config_filename = "config.json"
